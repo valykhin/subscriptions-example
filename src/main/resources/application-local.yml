@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: subscriptions
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        hbm2ddl.auto: none
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 100
+      minimum-idle: 10
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 5000
+      auto-commit: false
+      pool-name: HikariWalletPool
+      validation-timeout: 3000
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yml
+    enabled: true
+
+retry:
+  optimistic-lock:
+    max-attempts: 5
+    delay: 100
+    multiplier: 1.5
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    enable:
+      jvm: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+info:
+  application:
+    name: ${spring.application.name}
+    description: Subscriptions application
+    version: '@project.version@'
+    spring-boot-version: '@project.parent.version@'
