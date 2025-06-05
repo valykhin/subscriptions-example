@@ -13,7 +13,7 @@ RUN ./gradlew clean build --no-daemon
 FROM ${BUILD_IMAGE}
 
 RUN mkdir -p /app
-COPY --from=builder build/libs/user.jar /app/app.jar
+COPY --from=builder build/libs/subscriptions.jar /app/app.jar
 
 EXPOSE 8080
 
