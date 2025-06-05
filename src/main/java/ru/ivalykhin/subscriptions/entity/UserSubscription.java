@@ -30,4 +30,7 @@ public class UserSubscription {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    @Column(name = "expired_at")
+    private LocalDateTime expiredAt;
 }

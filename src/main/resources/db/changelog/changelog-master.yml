@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/0.0.1/002-create-subscriptions.yml
   - include:
       file: db/changelog/0.0.1/003-create-user-subscription.yml
+  - include:
+      file: db/changelog/0.0.1/004-add-expired-at-column-to-user-subscriptions.yml

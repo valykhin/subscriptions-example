@@ -1,7 +1,6 @@
 package ru.ivalykhin.subscriptions.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.ivalykhin.subscriptions.dto.UserSubscriptionDto;
 import ru.ivalykhin.subscriptions.entity.Subscription;
@@ -56,10 +55,5 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
                         .orElseThrow(() -> new UserSubscriptionNotFoundException(userId, subscriptionId));
 
         userSubscriptionRepository.delete(userSubscription);
-    }
-
-    @Override
-    public List<Subscription> getTopSubscriptions(int limit) {
-        return userSubscriptionRepository.findTopSubscriptions(Pageable.ofSize(limit));
     }
 }

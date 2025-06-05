@@ -17,4 +17,6 @@ public class UserSubscriptionDto {
     private UUID subscriptionId;
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
+    @JsonProperty("expired_at")
+    private LocalDateTime expiredAt;
 }

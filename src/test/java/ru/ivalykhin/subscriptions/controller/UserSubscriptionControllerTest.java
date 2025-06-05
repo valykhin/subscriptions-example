@@ -17,6 +17,8 @@ import ru.ivalykhin.subscriptions.service.SubscriptionService;
 import ru.ivalykhin.subscriptions.service.UserSubscriptionService;
 import ru.ivalykhin.subscriptions.util.ErrorResponseUtil;
 
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -196,6 +198,7 @@ public class UserSubscriptionControllerTest {
         return UserSubscriptionDto.builder()
                 .userId(userId)
                 .subscriptionId(subscriptionId)
+                .expiredAt(LocalDateTime.now().plus(Period.ofDays(30)))
                 .build();
     }
 

@@ -9,9 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.ivalykhin.subscriptions.dto.SubscriptionDto;
-import ru.ivalykhin.subscriptions.entity.Subscription;
+import ru.ivalykhin.subscriptions.dto.SubscriptionsTopResponseDto;
 import ru.ivalykhin.subscriptions.service.SubscriptionService;
-import ru.ivalykhin.subscriptions.service.UserSubscriptionService;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,62 +28,59 @@ public class SubscriptionControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
-    private UserSubscriptionService userSubscriptionService;
-    @MockitoBean
     private SubscriptionService subscriptionService;
 
     private final String subscriptionsTopEndpoint = "/subscriptions/top";
-    private static List<SubscriptionDto> subscriptionDtoList;
-    private static List<Subscription> subscriptionList;
+    private static List<SubscriptionsTopResponseDto> subscriptionsTopResponseDtoList;
 
     @BeforeAll
     public static void setUp() {
-        subscriptionDtoList = List.of(SubscriptionDto.builder()
-                        .id(UUID.randomUUID())
-                        .name("test1")
-                        .description("test description1")
+        subscriptionsTopResponseDtoList = List.of(
+                SubscriptionsTopResponseDto.builder()
+                        .subscription(SubscriptionDto.builder()
+                                .id(UUID.randomUUID())
+                                .name("test1")
+                                .description("test description1")
+                                .build())
+                        .count(6L)
                         .build(),
-                SubscriptionDto.builder()
-                        .id(UUID.randomUUID())
-                        .name("test2")
-                        .description("test description2")
+                SubscriptionsTopResponseDto.builder()
+                        .subscription(SubscriptionDto.builder()
+                                .id(UUID.randomUUID())
+                                .name("test2")
+                                .description("test description2")
+                                .build())
+                        .count(4L)
                         .build(),
-                SubscriptionDto.builder()
-                        .id(UUID.randomUUID())
-                        .name("test3")
-                        .description("test description3")
+                SubscriptionsTopResponseDto.builder()
+                        .subscription(SubscriptionDto.builder()
+                                .id(UUID.randomUUID())
+                                .name("test3")
+                                .description("test description3")
+                                .build())
+                        .count(2L)
                         .build()
         );
-        subscriptionList = subscriptionDtoList.stream()
-                .map(subscriptionDto ->
-                        Subscription.builder()
-                                .id(subscriptionDto.getId())
-                                .name(subscriptionDto.getName())
-                                .description(subscriptionDto.getDescription())
-                                .build())
-                .toList();
     }
 
     @Test
     public void getTopSubscriptions_HasData_success() throws Exception {
 
-        when(userSubscriptionService.getTopSubscriptions(3)).thenReturn(subscriptionList);
-        when(subscriptionService.convertEntitiesToDto(subscriptionList)).thenReturn(subscriptionDtoList);
+        when(subscriptionService.getTopSubscriptions(3)).thenReturn(subscriptionsTopResponseDtoList);
 
         mockMvc.perform(get(subscriptionsTopEndpoint)
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(subscriptionDtoList))
+                .andExpect(content().json(objectMapper.writeValueAsString(subscriptionsTopResponseDtoList))
                 );
-        verify(userSubscriptionService, times(1)).getTopSubscriptions(3);
+        verify(subscriptionService, times(1)).getTopSubscriptions(3);
     }
 
     @Test
     public void getTopSubscriptions_NoData_success() throws Exception {
 
-        when(userSubscriptionService.getTopSubscriptions(3)).thenReturn(Collections.emptyList());
-        when(subscriptionService.convertEntitiesToDto(subscriptionList)).thenReturn(Collections.emptyList());
+        when(subscriptionService.getTopSubscriptions(3)).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get(subscriptionsTopEndpoint)
                         .accept(MediaType.APPLICATION_JSON)
@@ -92,7 +88,7 @@ public class SubscriptionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(Collections.emptyList()))
                 );
-        verify(userSubscriptionService, times(1)).getTopSubscriptions(3);
+        verify(subscriptionService, times(1)).getTopSubscriptions(3);
     }
 }
 
