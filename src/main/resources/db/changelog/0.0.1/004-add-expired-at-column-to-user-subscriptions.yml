@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-add-expired-at-column-to-user-subscriptions
+      author: ivalykhin
+      changes:
+        - addColumn:
+            tableName: user_subscriptions
+            columns:
+              - column:
+                  name: expired_at
+                  type: TIMESTAMP
+                  defaultValueComputed: "now() + interval '1 month'"
