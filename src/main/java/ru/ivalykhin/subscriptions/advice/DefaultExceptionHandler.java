@@ -8,26 +8,22 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.ivalykhin.subscriptions.dto.ErrorResponse;
-import ru.ivalykhin.subscriptions.exception.SubscriptionNotFoundException;
-import ru.ivalykhin.subscriptions.exception.UserAlreadyExistsException;
-import ru.ivalykhin.subscriptions.exception.UserNotFoundException;
+import ru.ivalykhin.subscriptions.exception.*;
 
 @Slf4j
 @RestControllerAdvice
 public class DefaultExceptionHandler {
 
-    @ExceptionHandler(SubscriptionNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleSubscriptionNotFound(SubscriptionNotFoundException ex) {
-        log.error(ex.getMessage());
+    @ExceptionHandler({
+            SubscriptionNotFoundException.class,
+            UserNotFoundException.class,
+            UserSubscriptionNotFoundException.class
+    })
+    public ResponseEntity<ErrorResponse> handleSubscriptionNotFound(SubscriptionsBusinessException ex) {
+        String message = ((RuntimeException) ex).getMessage();
+        log.error(message);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
-        log.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
+                .body(new ErrorResponse(ex.getErrorCode(), message));
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)

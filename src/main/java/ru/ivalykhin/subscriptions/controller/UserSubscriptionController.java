@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Tag(name = "User Subscriptions API", description = "Provides API for users subscriptions management")
 @RestController
-@RequestMapping("/users/{id}/subscriptions")
+@RequestMapping("/users/{userId}/subscriptions")
 @RequiredArgsConstructor
 public class UserSubscriptionController {
     private final UserSubscriptionService userSubscriptionService;
@@ -30,9 +30,9 @@ public class UserSubscriptionController {
         return userSubscriptionService.getUserSubscriptions(userId);
     }
 
-    @DeleteMapping
+    @DeleteMapping(value = "/{subscriptionId}")
     public void deleteUserSubscription(@PathVariable UUID userId,
-                                       @PathVariable UUID userSubscriptionId) {
-        userSubscriptionService.deleteUserSubscription(userId, userSubscriptionId);
+                                       @PathVariable UUID subscriptionId) {
+        userSubscriptionService.deleteUserSubscription(userId, subscriptionId);
     }
 }

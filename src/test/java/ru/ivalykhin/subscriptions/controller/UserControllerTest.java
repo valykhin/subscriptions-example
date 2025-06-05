@@ -10,10 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.ivalykhin.subscriptions.dto.UserDto;
-import ru.ivalykhin.subscriptions.exception.SubscriptionsBusinessException;
 import ru.ivalykhin.subscriptions.exception.UserAlreadyExistsException;
 import ru.ivalykhin.subscriptions.exception.UserNotFoundException;
 import ru.ivalykhin.subscriptions.service.UserServiceImpl;
+import ru.ivalykhin.subscriptions.util.ErrorResponseUtil;
 
 import java.util.UUID;
 
@@ -95,11 +95,8 @@ public class UserControllerTest {
                             .content((objectMapper.writeValueAsString(userCreateRequestDto)))
                     )
                     .andExpect(status().isConflict())
-                    .andExpect(content().string(
-                            allOf(stringContainsInOrder(
-                                    "USER_ALREADY_EXISTS",
-                                    "User already exist with phone number: " + userCreateRequestDto.getPhone()
-                            )))
+                    .andExpect(content().json(
+                            ErrorResponseUtil.getErrorMessage(exception))
                     );
             verifyCreateUserServiceCall(userCreateRequestDto);
         }
@@ -240,11 +237,8 @@ public class UserControllerTest {
                             .content((objectMapper.writeValueAsString(userDto)))
                     )
                     .andExpect(status().isNotFound())
-                    .andExpect(content().string(
-                            allOf(stringContainsInOrder(
-                                    "USER_NOT_FOUND",
-                                    "User not found: " + userId
-                            )))
+                    .andExpect(content().json(
+                            ErrorResponseUtil.getErrorMessage(exception))
                     );
             verifyUpdateUserServiceCall(userDto);
         }
@@ -299,11 +293,8 @@ public class UserControllerTest {
                             .accept(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isNotFound())
-                    .andExpect(content().string(
-                            allOf(stringContainsInOrder(
-                                    "USER_NOT_FOUND",
-                                    "User not found: " + userId
-                            )))
+                    .andExpect(content().json(
+                            ErrorResponseUtil.getErrorMessage(exception))
                     );
             verifyGetUserServiceCall(userDto);
         }
@@ -336,12 +327,7 @@ public class UserControllerTest {
                             .accept(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isNotFound())
-                    .andExpect(content().string(
-                            allOf(stringContainsInOrder(
-                                    "USER_NOT_FOUND",
-                                    "User not found: " + userId
-                            )))
-                    );
+                    .andExpect(content().json(ErrorResponseUtil.getErrorMessage(exception)));
             verifyDeleteUserServiceCall();
         }
 
@@ -367,16 +353,5 @@ public class UserControllerTest {
                 .surname("tester")
                 .phone("7-999-999-0000")
                 .build();
-    }
-
-
-    private String getErrorMessage(SubscriptionsBusinessException exception) {
-        return """
-                {
-                "error_code": "%s",
-                "message": "%s"
-                }
-                """.formatted(exception.getErrorCode(),
-                ((RuntimeException) exception).getMessage());
     }
 }

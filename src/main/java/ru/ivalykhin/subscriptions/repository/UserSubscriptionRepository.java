@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface UserSubscriptionRepository extends JpaRepository<UserSubscription, UUID> {
     List<UserSubscription> findAllByUser(User user);
 
-    Optional<UserSubscription> findByUserAndId(User user, UUID uuid);
+    Optional<UserSubscription> findByUserAndSubscriptionId(User user, UUID uuid);
 
     @Query("""
                 SELECT us.subscription

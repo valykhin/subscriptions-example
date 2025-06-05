@@ -8,7 +8,7 @@ import java.util.UUID;
 public class UserSubscriptionNotFoundException extends RuntimeException implements SubscriptionsBusinessException {
     public final String errorCode = "USER_SUBSCRIPTION_NOT_FOUND";
 
-    public UserSubscriptionNotFoundException(UUID userId, UUID userSubscriptionId) {
-        super("Subscription %s for user %s not found".formatted(userSubscriptionId, userId));
+    public UserSubscriptionNotFoundException(UUID userId, UUID subscriptionId) {
+        super("Subscription %s for user %s not found".formatted(subscriptionId, userId));
     }
 }

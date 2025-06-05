@@ -48,12 +48,12 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     }
 
     @Override
-    public void deleteUserSubscription(UUID userId, UUID userSubscriptionId) {
+    public void deleteUserSubscription(UUID userId, UUID subscriptionId) {
         User user = userService.getUserEntity(userId);
 
         UserSubscription userSubscription =
-                userSubscriptionRepository.findByUserAndId(user, userSubscriptionId)
-                        .orElseThrow(() -> new UserSubscriptionNotFoundException(userId, userSubscriptionId));
+                userSubscriptionRepository.findByUserAndSubscriptionId(user, subscriptionId)
+                        .orElseThrow(() -> new UserSubscriptionNotFoundException(userId, subscriptionId));
 
         userSubscriptionRepository.delete(userSubscription);
     }
